@@ -1,13 +1,27 @@
-export function maxItemAssociation(arr) {
-  let recommendation = [];
+export function maxItemAssociation(orders) {
+  let recommendations = [];
 
-  arr.sort().forEach((element) => {
-    let isIntersect = arr[0].some((x) => element.includes(x));
-
-    if (isIntersect) {
-      recommendation.push(element);
+  orders.forEach((order) => {
+    if (!recommendations.length) {
+      recommendations.push(new Set(order));
+    } else {
+      recommendations.forEach((recommendation) => {
+        for (const item of order) {
+          if (recommendation.has(item)) {
+            order.forEach((el) => {
+              recommendation.add(el);
+            });
+          } else {
+            recommendations.push(new Set(order));
+          }
+        }
+      });
     }
   });
 
-  return [...new Set(recommendation.flat())];
+  recommendations = recommendations
+    .map((recomendation) => [...recomendation].sort())
+    .sort();
+
+  return recommendations[0];
 }
